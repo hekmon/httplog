@@ -164,7 +164,7 @@ func (rw *ResponseWriter) WriteHeader(statusCode int) {
 	if shouldFlush {
 		defer rw.flusher.Flush()
 	} else {
-		// nullify flusher to prevent further flushes
+		// nullify flusher to prevent futur flushes
 		rw.flusher = nil
 	}
 }
@@ -176,7 +176,7 @@ func (rw *ResponseWriter) WriteHeader(statusCode int) {
 // Flush sends any buffered data to the client if the underlying response
 // writer supports flushing. If not supported, this method does nothing.
 //
-// Note that flush is automatically called by Write and WriteHeader methods,
+// Note that flush is automatically called by Write and WriteHeader methods
 // if the underlying response writer supports it (i.e., http.ResponseWriter)
 // and the content type of response is one of StreamingContentTypes.
 func (rw *ResponseWriter) Flush() {
