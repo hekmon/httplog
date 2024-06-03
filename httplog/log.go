@@ -27,8 +27,8 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		// Generate a uniq ID for this request
-		reqIDLogValue := slog.Uint64("request_id", l.requests.Add(1))
-		logger := l.slogger.With(reqIDLogValue)
+		reqID := l.requests.Add(1)
+		logger := l.slogger.With(slog.Uint64("request_id", reqID))
 		// Log the request
 		if logger.Handler().Enabled(r.Context(), slog.LevelInfo) {
 			logger.InfoContext(r.Context(), "HTTP request received",
@@ -79,7 +79,7 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 		flusherCatcher := httpinspect.NewResponseWriter(w, logger.Handler().Enabled(r.Context(), slog.LevelDebug))
 		next.ServeHTTP(
 			flusherCatcher,
-			r.WithContext(context.WithValue(r.Context(), ReqIDKey, reqIDLogValue)),
+			r.WithContext(context.WithValue(r.Context(), ReqIDKey, reqID)),
 		)
 		// Log the response
 		logger.InfoContext(r.Context(), "HTTP request handled",
