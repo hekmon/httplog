@@ -1,4 +1,4 @@
-package httplog
+package httpslog
 
 import (
 	"bytes"
