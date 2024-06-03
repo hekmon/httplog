@@ -7,7 +7,7 @@ import (
 
 // StreamingContentTypes is a list of content types that are considered
 // to be streaming. If the content type of a ResponseWriter is in this list,
-// WriteHeader and any subsequent writes will be flushed directly to the client.
+// WriteHeader and any subsequent Write calls will be flushed directly to the client.
 var StreamingContentTypes = []string{
 	"text/event-stream",
 	"application/x-ndjson",
