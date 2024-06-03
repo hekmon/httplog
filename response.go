@@ -164,7 +164,7 @@ func (rw *ResponseWriter) WriteHeader(statusCode int) {
 	if shouldFlush {
 		defer rw.flusher.Flush()
 	} else {
-		// nullyfy flusher to prevent further flushes
+		// nullify flusher to prevent further flushes
 		rw.flusher = nil
 	}
 }
