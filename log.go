@@ -19,6 +19,8 @@ const (
 	// ReqIDKey is a reference key to store a unique ID for each HTTP request within the context.
 	// Use it to retreive the unique ID of a HTTP request in the wrapped handler from the request context.
 	ReqIDKey ReqIDType = "reqid"
+	// ReqIDKeyName is a reference slog key name that you can use to be consistent on how the key should be name.
+	ReqIDKeyName string = "request_id"
 )
 
 // Log is a HTTP middleware that logs HTTP requests and responses. Use it to decorates your actual http handlers.
@@ -28,7 +30,7 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 		start := time.Now()
 		// Generate a uniq ID for this request
 		reqID := l.requests.Add(1)
-		logger := l.slogger.With(slog.Uint64("request_id", reqID))
+		logger := l.slogger.With(slog.Uint64(ReqIDKeyName, reqID))
 		// Log the request
 		if logger.Handler().Enabled(r.Context(), slog.LevelInfo) {
 			logger.InfoContext(r.Context(), "HTTP request received",
