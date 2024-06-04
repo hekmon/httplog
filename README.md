@@ -2,13 +2,13 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/hekmon/httplog.svg)](https://pkg.go.dev/github.com/hekmon/httplog)
 
-HTTP Log provides an HTTP middleware that use the provided [structured logger](https://go.dev/blog/slog) to log HTTP requests and response within a Go HTTP server.
+HTTP Log provides a HTTP middleware that use the provided [structured logger](https://go.dev/blog/slog) to log HTTP requests and response within a Go HTTP server.
 While many web frameworks already provide this, this lightweight package is useful for those who want to stick to a KISS codebase and the standard library as muxer/server.
 
 The middleware will:
 
 * Pre
-  * Generate a unid request ID used by all log calls
+  * Generate a uniq request ID used by all log calls within the middleware
   * Logs basic info about the incoming request (host, method, URI, client IP & headers).
   * If logger level is set to `Debug` it will also dump and log the body up to a certain size while still making the body available thru the original request.
   * Prepare a response catcher (available as a separate package if you want to use only this part)
