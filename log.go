@@ -89,10 +89,17 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 		)
 		if logger.Handler().Enabled(r.Context(), slog.LevelDebug) {
 			body := flusherCatcher.GetBody()
-			logger.DebugContext(r.Context(), "HTTP response",
-				slog.String("response_body", string(body)),
-				slog.Int("response_size", len(body)),
-			)
+			if int64(len(body)) <= l.bodyMaxRead {
+				logger.DebugContext(r.Context(), "HTTP response",
+					slog.String("response_body", string(body)),
+					slog.Int("response_size", len(body)),
+				)
+			} else {
+				logger.DebugContext(r.Context(), "HTTP response",
+					slog.String("skipped", fmt.Sprintf("body exceeds max debug size of %d", l.bodyMaxRead)),
+					slog.Int("response_size", len(body)),
+				)
+			}
 		}
 	})
 }
