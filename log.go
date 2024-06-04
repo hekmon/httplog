@@ -1,4 +1,4 @@
-package httpslog
+package httplog
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hekmon/httpinspect"
+	"github.com/hekmon/httplog/catcherflusher"
 )
 
 // ReqIDType is a custom type for storing a unique ID for each HTTP request within the request context.
@@ -76,7 +76,7 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 			)
 		}
 		// Pass to the wrapped handler
-		flusherCatcher := httpinspect.NewResponseWriter(w, logger.Handler().Enabled(r.Context(), slog.LevelDebug))
+		flusherCatcher := catcherflusher.NewResponseWriter(w, logger.Handler().Enabled(r.Context(), slog.LevelDebug))
 		next.ServeHTTP(
 			flusherCatcher,
 			r.WithContext(context.WithValue(r.Context(), ReqIDKey, reqID)),

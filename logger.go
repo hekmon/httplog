@@ -1,4 +1,4 @@
-package httpslog
+package httplog
 
 import (
 	"log/slog"

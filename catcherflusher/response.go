@@ -1,4 +1,4 @@
-package httpinspect
+package catcherflusher
 
 import (
 	"bytes"

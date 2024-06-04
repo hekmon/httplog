@@ -1,3 +1,3 @@
-module github.com/hekmon/httpinspect
+module github.com/hekmon/httplog
 
 go 1.22.3
