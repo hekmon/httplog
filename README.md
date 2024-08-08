@@ -39,12 +39,12 @@ var (
 )
 
 func main() {
-    // Initiate the structured main logger.
+    // Initiate a structured main logger.
     logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
         Level: slog.LevelDebug,
     }))
 
-    // Create the HTTP structured logger inheriting the main slogger
+    // Create the httplog middleware
     httplogger := httplog.New(logger)
 
     // Setup mux and server
@@ -57,13 +57,8 @@ func main() {
 }
 
 func ActualHandlerFunc(w http.ResponseWriter, r *http.Request) {
-    // Retreive the request ID from context
-    // Thanks to the httplog.ReqIDKey custom key,
-    // we are certain that we are getting the httplog reqid, which is a uint64
-    reqID := r.Context().Value(httplog.ReqIDKey).(uint64)
-
     // Setup a local logger that will always print out the request ID
-    logger := logger.With(slog.Uint64(httplog.ReqIDKeyName, reqID))
+    logger := logger.With(httplog.GetReqIDSLogAttr(ctx))
 
     /*
         do stuff

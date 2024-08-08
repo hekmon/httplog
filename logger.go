@@ -1,6 +1,7 @@
 package httplog
 
 import (
+	"context"
 	"log/slog"
 	"sync/atomic"
 )
@@ -37,4 +38,9 @@ func New(logger *slog.Logger) (l *Logger) {
 // Current, yet unfulfilled, requests are also taking into account.
 func (l *Logger) TotalRequests() uint64 {
 	return l.requests.Load()
+}
+
+func GetReqIDSLogAttr(reqCtx context.Context) slog.Attr {
+	// Retreive the request ID from context inserted by the log middleware and return it as a slog.Attr
+	return slog.Uint64(ReqIDKeyName, reqCtx.Value(ReqIDKey).(uint64))
 }
