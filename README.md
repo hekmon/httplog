@@ -25,54 +25,54 @@ The middleware will:
 package main
 
 import (
-	"fmt"
-	"log/slog"
-	"net/http"
-	"os"
+    "fmt"
+    "log/slog"
+    "net/http"
+    "os"
 
-	"github.com/hekmon/httplog"
+    "github.com/hekmon/httplog"
 )
 
 var (
-	// Global logger
-	logger *slog.Logger
+    // Global logger
+    logger *slog.Logger
 )
 
 func main() {
-	// Initiate the structured main logger.
-	logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelDebug,
-	}))
+    // Initiate the structured main logger.
+    logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+        Level: slog.LevelDebug,
+    }))
 
-	// Create the HTTP structured logger inheriting the main slogger
-	httplogger := httplog.New(logger)
+    // Create the HTTP structured logger inheriting the main slogger
+    httplogger := httplog.New(logger)
 
-	// Setup mux and server
-	http.HandleFunc("/", httplogger.Log(ActualHandlerFunc))
+    // Setup mux and server
+    http.HandleFunc("/", httplogger.Log(ActualHandlerFunc))
 
-	// Start the server
-	if err := http.ListenAndServe(":80", nil); err != nil {
-		panic(err)
-	}
+    // Start the server
+    if err := http.ListenAndServe(":80", nil); err != nil {
+        panic(err)
+    }
 }
 
 func ActualHandlerFunc(w http.ResponseWriter, r *http.Request) {
-	// Retreive the request ID from context
-	// Thanks to the httplog.ReqIDKey custom key,
-	// we are certain that we are getting the httplog reqid, which is a uint64
-	reqID := r.Context().Value(httplog.ReqIDKey).(uint64)
+    // Retreive the request ID from context
+    // Thanks to the httplog.ReqIDKey custom key,
+    // we are certain that we are getting the httplog reqid, which is a uint64
+    reqID := r.Context().Value(httplog.ReqIDKey).(uint64)
 
-	// Setup a local logger that will always print out the request ID
-	logger := logger.With(slog.Uint64(httplog.ReqIDKeyName, reqID))
+    // Setup a local logger that will always print out the request ID
+    logger := logger.With(slog.Uint64(httplog.ReqIDKeyName, reqID))
 
-	/*
-		do stuff
-	*/
+    /*
+        do stuff
+    */
 
-	// Let's use our local logger
-	logger.Debug("this message will have the request id automatically attached to it")
+    // Let's use our local logger
+    logger.Debug("this message will have the request id automatically attached to it")
 
-	fmt.Fprintf(w, "Hello request %d!\n", reqID)
+    fmt.Fprintf(w, "Hello request %d!\n", reqID)
 }
 ```
 
@@ -80,7 +80,7 @@ func ActualHandlerFunc(w http.ResponseWriter, r *http.Request) {
 
 #### Client
 
-```
+```raw
 $ curl http://127.0.0.1
 Hello request 1!
 $ curl http://127.0.0.1
@@ -90,7 +90,7 @@ $
 
 #### Server
 
-```
+```raw
 time=2024-06-04T11:14:56.524+02:00 level=INFO msg="HTTP request received" request_id=1 host=127.0.0.1 method=GET URI=/ client=127.0.0.1:64983 headers="map[Accept:[*/*] User-Agent:[curl/8.6.0]]"
 time=2024-06-04T11:14:56.525+02:00 level=DEBUG msg="this message will have the request id automatically attached to it" request_id=1
 time=2024-06-04T11:14:56.525+02:00 level=INFO msg="HTTP request handled" request_id=1 response_code=200 response_status=OK response_time=452.417µs
