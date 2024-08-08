@@ -38,7 +38,7 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 				slog.String("method", r.Method),
 				slog.String("URI", r.URL.RequestURI()),
 				slog.String("client", r.RemoteAddr),
-				slog.Any("headers", r.Header),
+				slog.Any("headers", sanitizeHeaders(r.Header)),
 			)
 		}
 		// If debug is on, try to log body up to a certain size
@@ -53,7 +53,7 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 						slog.String("method", r.Method),
 						slog.String("URI", r.URL.RequestURI()),
 						slog.String("client", r.RemoteAddr),
-						slog.Any("headers", r.Header),
+						slog.Any("headers", sanitizeHeaders(r.Header)),
 						slog.String("error", err.Error()),
 					)
 					http.Error(
@@ -104,4 +104,36 @@ func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
 			}
 		}
 	})
+}
+
+func sanitizeHeaders(headers http.Header) http.Header {
+	var exists, sanitize bool
+	for _, header := range SanitizeHeaders {
+		if _, exists = headers[header]; exists {
+			sanitize = true
+			break
+		}
+	}
+	if !sanitize {
+		return headers
+	}
+	headersSanitized := make(http.Header, len(headers))
+	for header, values := range headers {
+		sanitize = false
+		for _, headerToSanitizeheader := range SanitizeHeaders {
+			if header == headerToSanitizeheader {
+				sanitize = true
+				break
+			}
+		}
+		if sanitize {
+			headersSanitized[header] = make([]string, len(values))
+			for i := range values {
+				headersSanitized[header][i] = "<redacted>"
+			}
+		} else {
+			headersSanitized[header] = values
+		}
+	}
+	return headersSanitized
 }

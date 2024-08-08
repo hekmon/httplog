@@ -9,6 +9,8 @@ var (
 	// DefaultBodyMaxRead is the default maximum number of bytes a body must have to be logged.
 	// Its value is copied in the New() constructor.
 	DefaultBodyMaxRead int64 = 10000
+	// DefaultSanitizeHeaders is the default list of headers to sanitize in the debug log.
+	SanitizeHeaders = []string{"Authorization"}
 )
 
 // Logger is a HTTP request/response logging utility.
