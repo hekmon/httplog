@@ -1,4 +1,4 @@
-module github.com/hekmon/httplog
+module github.com/hekmon/httplog/v2
 
 go 1.21
 

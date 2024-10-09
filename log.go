@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hekmon/httplog/catcherflusher"
+	"github.com/hekmon/httplog/v2/catcherflusher"
 )
 
 // ReqIDType is a custom type for storing a unique ID for each HTTP request within the request context.
