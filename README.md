@@ -7,17 +7,17 @@ While many web frameworks already provide this, this lightweight package is usef
 
 The middleware will:
 
-* Pre
-  * Generate a uniq request ID used by all log calls within the middleware
-  * Logs basic info about the incoming request (host, method, URI, client IP & headers).
-  * If logger level is set to `Debug` it will also dump and log the body up to a certain size while still making the body available thru the original request.
-  * Prepare a response catcher (available as a separate package if you want to use only this part)
-    * This custom catcher also automatically flush data if the content type is a streaming type, see the [catcherflusher](https://pkg.go.dev/github.com/hekmon/httplog/catcherflusher) sub package for more informations.
-  * Pass the uniq request ID within the request context
-* Call the next middleware
-* Post
-  * Log the status code (and status) and duration of the request.
-  * If logger level is set to `Debug` it will also dump and log the response body up to a certain size.
+- Pre
+  - Generate a uniq request ID used by all log calls within the middleware
+  - Logs basic info about the incoming request (host, method, URI, client IP & headers).
+  - If logger level is set to `Debug` it will also dump and log the body up to a certain size while still making the body available thru the original request.
+  - Prepare a response catcher (available as a separate package if you want to use only this part)
+    - This custom catcher also automatically flush data if the content type is a streaming type, see the [catcherflusher](https://pkg.go.dev/github.com/hekmon/httplog/catcherflusher) sub package for more informations.
+  - Pass the uniq request ID within the request context
+- Call the next middleware
+- Post
+  - Log the status code (and status) and duration of the request.
+  - If logger level is set to `Debug` it will also dump and log the response body up to a certain size.
 
 ## Example
 
@@ -58,7 +58,7 @@ func main() {
 
 func ActualHandlerFunc(w http.ResponseWriter, r *http.Request) {
     // Setup a local logger that will always print out the request ID
-    logger := logger.With(httplog.GetReqIDSLogAttr(ctx))
+    logger := logger.With(httplog.GetReqIDSLogAttr(r.Context()))
 
     /*
         do stuff
@@ -67,7 +67,7 @@ func ActualHandlerFunc(w http.ResponseWriter, r *http.Request) {
     // Let's use our local logger
     logger.Debug("this message will have the request id automatically attached to it")
 
-    fmt.Fprintf(w, "Hello request %d!\n", reqID)
+    fmt.Fprintf(w, "Hello request %v!\n", r.Context().Value(httplog.ReqIDKey))
 }
 ```
 
