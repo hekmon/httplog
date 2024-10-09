@@ -35,7 +35,7 @@ func New(logger *slog.Logger) (l *Logger) {
 }
 
 // TotalRequests returns the number of requests that went thru the logger.
-// Current, yet unfulfilled, requests are also taking into account.
+// Inflight requests are also taking into account.
 func (l *Logger) TotalRequests() uint64 {
 	return l.requests.Load()
 }

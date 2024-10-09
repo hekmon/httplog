@@ -19,7 +19,7 @@ const (
 	// ReqIDKey is a reference key to store a unique ID for each HTTP request within the context.
 	// Use it to retreive the unique ID of a HTTP request in the wrapped handler from the request context.
 	ReqIDKey ReqIDType = "reqid"
-	// ReqIDKeyName is a reference slog key name that you can use to be consistent on how the key should be name.
+	// ReqIDKeyName is a reference slog key name that you can use to be consistent on how the key should be named.
 	ReqIDKeyName string = "request_id"
 )
 
