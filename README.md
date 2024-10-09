@@ -48,7 +48,7 @@ func main() {
     httplogger := httplog.New(logger)
 
     // Setup mux and server
-    http.HandleFunc("/", httplogger.Log(ActualHandlerFunc))
+    http.HandleFunc("/", httplogger.LogFunc(ActualHandlerFunc))
 
     // Start the server
     if err := http.ListenAndServe(":80", nil); err != nil {

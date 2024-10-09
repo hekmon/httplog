@@ -25,7 +25,13 @@ const (
 
 // Log is a HTTP middleware that logs HTTP requests and responses. Use it to decorates your actual http handlers.
 // Request body and response body are logged only if the wrapped slogger's level is set to LevelDebug or lower.
-func (l *Logger) Log(next http.HandlerFunc) http.HandlerFunc {
+func (l *Logger) Log(next http.Handler) http.Handler {
+	return l.LogFunc(next.ServeHTTP)
+}
+
+// LogFunc is a HTTP middleware that logs HTTP requests and responses. Use it to decorates your actual http func handlers.
+// Request body and response body are logged only if the wrapped slogger's level is set to LevelDebug or lower.
+func (l *Logger) LogFunc(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		// Generate a uniq ID for this request
