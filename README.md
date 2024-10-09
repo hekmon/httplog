@@ -19,6 +19,12 @@ The middleware will:
   - Log the status code (and status) and duration of the request.
   - If logger level is set to `Debug` it will also dump and log the response body up to a certain size.
 
+## Install
+
+```bash
+go get github.com/hekmon/httplog/v2
+```
+
 ## Example
 
 ```go
