@@ -3,6 +3,7 @@ package catcherflusher
 import (
 	"bytes"
 	"net/http"
+	"strings"
 )
 
 // StreamingContentTypes is a list of content types that are considered
@@ -156,7 +157,7 @@ func (rw *ResponseWriter) WriteHeader(statusCode int) {
 	var shouldFlush bool
 	responseContentType := rw.Header().Get("Content-Type")
 	for _, ct := range StreamingContentTypes {
-		if ct == responseContentType {
+		if strings.HasPrefix(responseContentType, ct) {
 			shouldFlush = true
 			break
 		}
